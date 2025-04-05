@@ -1,0 +1,44 @@
+name: Assets Uploader
+
+on:
+  issue_comment:
+    types: [created]
+  workflow_dispatch:
+
+jobs:
+  build:
+    if: ${{ github.event.issue.number == 1 }}
+    runs-on: ubuntu-latest
+    concurrency:
+      group: assets-uploader
+      cancel-in-progress: true
+    steps:
+      - name: Get diary title
+        run: echo "DIARY_TITLE=$(gh issue list --repo "noraworld/reserved-diary" --limit 1 | awk '{ print $3 }')" >> $GITHUB_ENV
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Get year
+        run: echo "YEAR=$(cut -d '-' -f1 <<< ${{ env.DIARY_TITLE }})" >> $GITHUB_ENV
+
+      - name: Get month
+        run: echo "MONTH=$(cut -d '-' -f2 <<< ${{ env.DIARY_TITLE }})" >> $GITHUB_ENV
+
+      - name: Get day
+        run: echo "DAY=$(cut -d '-' -f3 <<< ${{ env.DIARY_TITLE }})" >> $GITHUB_ENV
+
+      - name: Upload assets
+        uses: noraworld/assets-uploader@main
+        with:
+          assets_directory: ${{ env.YEAR }}/${{ env.MONTH }}/${{ env.DAY }}
+          assets_repo: noraworld/box-ivysaur
+          committer_email: mail@noraworld.com
+          committer_name: Kosuke Aoki
+          compression_threshold: 1048576
+          delete_after: true
+          personal_access_token: GH_TOKEN
+          resize_width: 1920
+          with_assets_compression: true
+          with_compatible_format: true
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
