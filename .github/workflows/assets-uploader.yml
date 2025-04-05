@@ -4,10 +4,15 @@ on:
   issue_comment:
     types: [created]
   workflow_dispatch:
+    inputs:
+      issue_number:
+        required: true
+        type: string
+        default: 1
 
 jobs:
   build:
-    if: ${{ github.event.issue.number == 1 }}
+    if: ${{ github.event.issue.number == 1 || github.event.inputs.issue_number == 1 }}
     runs-on: ubuntu-latest
     concurrency:
       group: assets-uploader
