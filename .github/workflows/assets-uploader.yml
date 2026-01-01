@@ -36,7 +36,7 @@ jobs:
         uses: noraworld/assets-uploader@main
         with:
           assets_directory: ${{ env.YEAR }}/${{ env.MONTH }}/${{ env.DAY }}
-          assets_repo: noraworld/box-ivysaur
+          assets_repo_gist_id: f3eec6798d8f6296c1a5482ce2f13ed8
           committer_email: mail@noraworld.com
           committer_name: Kosuke Aoki
           compression_threshold: 1048576
